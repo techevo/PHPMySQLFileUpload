@@ -18,7 +18,7 @@
     // default configuration properties
     var defaults = {
       onSubmit:       false,
-      btnText:        "Browse files...",
+      btnText:        "Upload",
       url:        "upload.php",
       theme:        "custom",
       field:        "file",
@@ -91,7 +91,7 @@
             url: options.url,
             type: 'POST',
             data: formData,
-                    // dataType: 'json',
+            dataType: 'json',
             success: function(data){
               var percent = 100;
               obj.next('a').next('div').find('.pekeup-progress-bar:first').width(percent+'%');
