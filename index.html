@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>File Upload</title>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" /> 
+   <link href="css/themes/bootstrap/css/bootstrap.min.css" rel="stylesheet"></link>
+   <link href="css/custom.css" rel="stylesheet"></link>  
+   
+  <script type="text/javascript" src="js/jquery-1.9.0.min.js"></script>
+  <script type="text/javascript" src="js/pekeUpload.js"></script>
+  <script type="text/javascript" src="css/themes/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){ 
+      $("#file").pekeUpload({theme:'bootstrap', allowedExtensions:"pdf", multi:false, onFileError:function(file,error){alert("error on file: "+file.name+" error: "+error+"")}});
+      //$("#file2").pekeUpload({theme:'bootstrap'});
+      //$("#file3").pekeUpload({theme:'bootstrap', allowedExtensions:"pdf"});
+      //$("#file4").pekeUpload({theme:'bootstrap', multi:false});
+      //$("#file5").pekeUpload({theme:'bootstrap', allowedExtensions:"pdf", onFileError:function(file,error){alert("error on file: "+file.name+" error: "+error+"")}});
+
+    });
+  </script>
+  
+</head>
+<body>
+
+
+ <a href="#myModal" class="btn" data-toggle="modal">Add PDF</a>
+ <a href="#myModal" class="btn" >View PDF</a>
+ <a href="#myModal" class="btn" data-toggle="modal">Change PDF</a>
+ <a href="#myModal" class="btn" >Remove PDF</a>
+ 
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+    <h3 id="myModalLabel">Change PDF On Standard</h3>
+  </div>
+  <div class="modal-body">
+	<p>Select a PDF to associate to the Standard</p>
+    <p><input type="file" id="file" name="file" /></p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button class="btn btn-primary">Upload</button>
+  </div>
+</div>
+</body>
+</html>
