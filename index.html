@@ -11,10 +11,11 @@
   <script type="text/javascript" src="css/themes/bootstrap/js/bootstrap.min.js"></script>
   <script type="text/javascript">
     $(document).ready(function(){ 
-      $("#file").pekeUpload({
+      $("#fileAdd").pekeUpload({
 	  theme:'bootstrap', 
 	  allowedExtensions:"pdf", 
 	  multi:false,
+	  data:{type:"add"},
 	  onFileError:function(file,error){
 					alert("error on file: "+file.name+" error: "+error+"")
 				  },
@@ -24,7 +25,22 @@
 						window.location.href=window.location.href;
 					},
 	  invalidExtError: "Only PDF files are allowed"
-			   });
+	  });
+	  $("#fileChange").pekeUpload({
+	  theme:'bootstrap', 
+	  allowedExtensions:"pdf", 
+	  multi:false,
+	  data:{type:"change"},
+	  onFileError:function(file,error){
+					alert("error on file: "+file.name+" error: "+error+"")
+				  },
+	  onFileSuccess:function(file,data){
+						//logic to store in database.
+						alert("Document was uploaded successfully!");
+						window.location.href=window.location.href;
+					},
+	  invalidExtError: "Only PDF files are allowed"
+	  });
       //$("#file2").pekeUpload({theme:'bootstrap'});
       //$("#file3").pekeUpload({theme:'bootstrap', allowedExtensions:"pdf"});
       //$("#file4").pekeUpload({theme:'bootstrap', multi:false});
@@ -36,19 +52,32 @@
 </head>
 <body>
 <div>
-	 <a href="#myModal" class="btn" data-toggle="modal">Add PDF</a>
+	 <a href="#myModalAdd" class="btn" data-toggle="modal">Add PDF</a>
 	 <a href="#" class="btn" >View PDF</a>
-	 <a href="#myModal" class="btn" data-toggle="modal">Change PDF</a>
+	 <a href="#myModalChange" class="btn" data-toggle="modal">Change PDF</a>
 	 <a href="#" class="btn" >Remove PDF</a>
 	 
-	<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div id="myModalAdd" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-		<h3 id="myModalLabel">Add/Change PDF On Standard</h3>
+		<h3 id="myModalLabel">Add PDF On Standard</h3>
 	  </div>
 	  <div class="modal-body">
 		<p>Select a PDF to associate to the Standard</p>
-		<p><input type="file" id="file" name="file" /></p>
+		<p><input type="file" id="fileAdd" name="fileAdd" /></p>
+	  </div>
+	  <div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+	  </div>
+	</div>
+	<div id="myModalChange" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+		<h3 id="myModalLabel">Change PDF On Standard</h3>
+	  </div>
+	  <div class="modal-body">
+		<p>Select a PDF to associate to the Standard</p>
+		<p><input type="file" id="fileChange" name="fileChange" /></p>
 	  </div>
 	  <div class="modal-footer">
 		<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
