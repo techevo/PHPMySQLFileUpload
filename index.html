@@ -45,33 +45,8 @@
       //$("#file3").pekeUpload({theme:'bootstrap', allowedExtensions:"pdf"});
       //$("#file4").pekeUpload({theme:'bootstrap', multi:false});
       //$("#file5").pekeUpload({theme:'bootstrap', allowedExtensions:"pdf", onFileError:function(file,error){alert("error on file: "+file.name+" error: "+error+"")}});
-	$("#viewpdf").click(function(){
-	filename = 'view';
-	$.download('upload.php','operationtype='+filename );
-	  /*var formData = new FormData();
-	  formData.append('operationtype','view');
-	  
-	  var x ={'operationtype':'view'};
-	  console.log(x);
-	  		//call viewfile function in upload.php file
-		$.ajax({
-            url: 'upload.php',
-            type: 'GET',
-            data: x
-		}).done( function (html) {
-		  //Assuming that the PHP file will respond with '0' which means that something is wrong. I like to give codes to differentiate between error messages... For example: 0 would be wrong email, 1-another error, etc.
-			if (html!=='0')
-			  console.log('Thank you!'+html);
-			else
-			  alert('An error has occurred');
-		});*/
-
-	});
 	
-	$("#deletepdf").click(function(){
-			//delete and rename
-			
-	});
+	
 	$.urlParam = function(name){
 		var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 		if (results==null){
@@ -82,18 +57,35 @@
 		}
 	}
 	var ordernum = decodeURIComponent($.urlParam('ordernum'));
-	x = 'ordernumber='+ordernum; 
+	$("#viewpdf").click(function(){
+	opertnType = 'view';
+	$.download('upload.php','operationtype='+opertnType+'&ordernumber='+ordernum);
+	});
+	
+	$("#deletepdf").click(function(){
+			//delete and rename
+			
+	});
+	
+	
 	window.onload=function(){
 			//alert('hi');
 			$.ajax({
-				url: 'databasevalue.php',
-				type: 'GET',
-				data: x,
+				url: 'upload.php',
+				type: 'POST',
+				data: { ordernumber: ordernum, operationtype: null },
 				success: function(returned_data) {
 					//Var returned_data is ONLY available inside this fn!
-					console.log(returned_data);
+					alert(returned_data);
 					var obj = JSON.parse(returned_data);
-					console.log(obj["SourceFolder"]);
+					console.log(obj);
+					if(obj == null || (obj["url"] == null || obj["url"] == '')){
+						$("#addpdf").show();
+					} else{
+						$("#changepdf").show();
+						$("#viewpdf").show();
+						$("#deletepdf").show();
+					}
 				}
 			});
 			}
@@ -117,22 +109,15 @@
 	};
 	
 
-    });
   </script>
   
 </head>
 <body>
 <div>
-	 <a href="#myModalAdd" class="btn" data-toggle="modal">Add PDF</a>
-<<<<<<< HEAD
-	 <a href="#" class="btn" id="viewpdf">View PDF</a>
-	 <a href="#myModalChange" class="btn" data-toggle="modal">Change PDF</a>
-	 <a href="#" class="btn" id="deletepdf">Remove PDF</a>
-=======
-	 <a href="#" class="btn" >View PDF</a>
-	 <a href="#myModalChange" class="btn" data-toggle="modal">Change PDF</a>
-	 <a href="#" class="btn" >Remove PDF</a>
->>>>>>> origin/master
+	 <a href="#myModalAdd" class="btn" data-toggle="modal" id="addpdf" style="display:none">Add PDF</a>
+	 <a href="#" class="btn" id="viewpdf" style="display:none">View PDF</a>
+	 <a href="#myModalChange" class="btn" data-toggle="modal" style="display:none" id="changepdf">Change PDF</a>
+	 <a href="#" class="btn" id="deletepdf" style="display:none">Remove PDF</a>
 	 
 	<div id="myModalAdd" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">
