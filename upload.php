@@ -1,5 +1,8 @@
 <?php
+<<<<<<< HEAD
 include("config.php");
+=======
+>>>>>>> origin/master
 $targetFolder = '/uploads'; // Relative to the root
 
 //view pdf
