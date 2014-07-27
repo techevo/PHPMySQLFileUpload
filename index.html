@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>File Upload</title>
@@ -11,37 +11,149 @@
   <script type="text/javascript" src="css/themes/bootstrap/js/bootstrap.min.js"></script>
   <script type="text/javascript">
     $(document).ready(function(){ 
-      $("#file").pekeUpload({theme:'bootstrap', allowedExtensions:"pdf", multi:false, onFileError:function(file,error){alert("error on file: "+file.name+" error: "+error+"")}});
+      $("#fileAdd").pekeUpload({
+	  theme:'bootstrap', 
+	  allowedExtensions:"pdf", 
+	  multi:false,
+	  data:{type:"add"},
+	  onFileError:function(file,error){
+					alert("error on file: "+file.name+" error: "+error+"")
+				  },
+	  onFileSuccess:function(file,data){
+						//logic to store in database.
+						alert("Document was uploaded successfully!");
+						window.location.href=window.location.href;
+					},
+	  invalidExtError: "Only PDF files are allowed"
+	  });
+	  $("#fileChange").pekeUpload({
+	  theme:'bootstrap', 
+	  allowedExtensions:"pdf", 
+	  multi:false,
+	  data:{type:"change"},
+	  onFileError:function(file,error){
+					alert("error on file: "+file.name+" error: "+error+"")
+				  },
+	  onFileSuccess:function(file,data){
+						//logic to store in database.
+						alert("Document was uploaded successfully!");
+						window.location.href=window.location.href;
+					},
+	  invalidExtError: "Only PDF files are allowed"
+	  });
       //$("#file2").pekeUpload({theme:'bootstrap'});
       //$("#file3").pekeUpload({theme:'bootstrap', allowedExtensions:"pdf"});
       //$("#file4").pekeUpload({theme:'bootstrap', multi:false});
       //$("#file5").pekeUpload({theme:'bootstrap', allowedExtensions:"pdf", onFileError:function(file,error){alert("error on file: "+file.name+" error: "+error+"")}});
+	$("#viewpdf").click(function(){
+	filename = 'view';
+	$.download('upload.php','operationtype='+filename );
+	  /*var formData = new FormData();
+	  formData.append('operationtype','view');
+	  
+	  var x ={'operationtype':'view'};
+	  console.log(x);
+	  		//call viewfile function in upload.php file
+		$.ajax({
+            url: 'upload.php',
+            type: 'GET',
+            data: x
+		}).done( function (html) {
+		  //Assuming that the PHP file will respond with '0' which means that something is wrong. I like to give codes to differentiate between error messages... For example: 0 would be wrong email, 1-another error, etc.
+			if (html!=='0')
+			  console.log('Thank you!'+html);
+			else
+			  alert('An error has occurred');
+		});*/
+
+	});
+	
+	$("#deletepdf").click(function(){
+			//delete and rename
+			
+	});
+	$.urlParam = function(name){
+		var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		if (results==null){
+		   return null;
+		}
+		else{
+		   return results[1] || 0;
+		}
+	}
+	var ordernum = decodeURIComponent($.urlParam('ordernum'));
+	x = 'ordernumber='+ordernum; 
+	window.onload=function(){
+			//alert('hi');
+			$.ajax({
+				url: 'databasevalue.php',
+				type: 'GET',
+				data: x,
+				success: function(returned_data) {
+					//Var returned_data is ONLY available inside this fn!
+					console.log(returned_data);
+					var obj = JSON.parse(returned_data);
+					console.log(obj["SourceFolder"]);
+				}
+			});
+			}
+	});
+	
+	jQuery.download = function(url, data, method){
+		//url and data options required
+		if( url && data ){ 
+			//data can be string of parameters or array/object
+			data = typeof data == 'string' ? data : jQuery.param(data);
+			//split params into form inputs
+			var inputs = '';
+			jQuery.each(data.split('&'), function(){ 
+				var pair = this.split('=');
+				inputs+='<input type="hidden" name="'+ pair[0] +'" value="'+ pair[1] +'" />'; 
+			});
+			//send request
+			jQuery('<form action="'+ url +'" method="'+ (method||'post') +'">'+inputs+'</form>')
+			.appendTo('body').submit().remove();
+		};
+	};
+	
 
     });
   </script>
   
 </head>
 <body>
-
-
- <a href="#myModal" class="btn" data-toggle="modal">Add PDF</a>
- <a href="#myModal" class="btn" >View PDF</a>
- <a href="#myModal" class="btn" data-toggle="modal">Change PDF</a>
- <a href="#myModal" class="btn" >Remove PDF</a>
- 
-<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-    <h3 id="myModalLabel">Change PDF On Standard</h3>
-  </div>
-  <div class="modal-body">
-	<p>Select a PDF to associate to the Standard</p>
-    <p><input type="file" id="file" name="file" /></p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button class="btn btn-primary">Upload</button>
-  </div>
+<div>
+	 <a href="#myModalAdd" class="btn" data-toggle="modal">Add PDF</a>
+	 <a href="#" class="btn" id="viewpdf">View PDF</a>
+	 <a href="#myModalChange" class="btn" data-toggle="modal">Change PDF</a>
+	 <a href="#" class="btn" id="deletepdf">Remove PDF</a>
+	 
+	<div id="myModalAdd" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+		<h3 id="myModalLabel">Add PDF On Standard</h3>
+	  </div>
+	  <div class="modal-body">
+		<p>Select a PDF to associate to the Standard</p>
+		<p><input type="file" id="fileAdd" name="fileAdd" /></p>
+	  </div>
+	  <div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+	  </div>
+	</div>
+	<div id="myModalChange" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+		<h3 id="myModalLabel">Change PDF On Standard</h3>
+	  </div>
+	  <div class="modal-body">
+		<p>Select a PDF to associate to the Standard</p>
+		<p><input type="file" id="fileChange" name="fileChange" /></p>
+	  </div>
+	  <div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+	  </div>
+	</div>
 </div>
 </body>
 </html>
