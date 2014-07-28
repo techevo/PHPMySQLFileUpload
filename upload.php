@@ -14,6 +14,8 @@ if($_POST['operationtype'] == null && $_POST['ordernumber']!= null){
 }
 
 if($_POST['operationtype'] == 'add'){
+	echo "in upload add";
+	exit;
 	if (!empty($_FILES)) {
 		//call addpdf
 		$file_name = addpdf($_POST['ordernumber']);
@@ -57,9 +59,9 @@ function addpdf($orderNum){
 	$retInfo = retrivePdfForOrder($orderNum);
 	$file_name;
 	if($retInfo == null) {
-		$file_name = $_SESSION["session_account"]."_".$orderNum."_001";
+		$file_name = $_SESSION["session_account"]."_".$orderNum."_001.pdf";
 	} else {
-		$file_name = $_SESSION["session_account"]."_".$orderNum . (substr($retInfo->url,-3) + 1);
+		$file_name = $_SESSION["session_account"]."_".$orderNum . (substr($retInfo->url,-6,3) + 1). ".pdf";
 	}
 	global $con;
 	$file_name = $_SESSION["session_account"]."_".$orderNum;

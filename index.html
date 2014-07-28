@@ -10,12 +10,22 @@
   <script type="text/javascript" src="js/pekeUpload.js"></script>
   <script type="text/javascript" src="css/themes/bootstrap/js/bootstrap.min.js"></script>
   <script type="text/javascript">
+  $.urlParam = function(name){
+		var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		if (results==null){
+		   return null;
+		}
+		else{
+		   return results[1] || 0;
+		}
+	}
+	var ordernum = decodeURIComponent($.urlParam('ordernum'));
     $(document).ready(function(){ 
       $("#fileAdd").pekeUpload({
 	  theme:'bootstrap', 
 	  allowedExtensions:"pdf", 
 	  multi:false,
-	  data:{type:"add"},
+	  data:{operationtype:"add",ordernumber:ordernum},
 	  onFileError:function(file,error){
 					alert("error on file: "+file.name+" error: "+error+"")
 				  },
@@ -30,7 +40,7 @@
 	  theme:'bootstrap', 
 	  allowedExtensions:"pdf", 
 	  multi:false,
-	  data:{type:"change"},
+	  data:{operationtype:"change",ordernumber:ordernum},
 	  onFileError:function(file,error){
 					alert("error on file: "+file.name+" error: "+error+"")
 				  },
@@ -47,16 +57,7 @@
       //$("#file5").pekeUpload({theme:'bootstrap', allowedExtensions:"pdf", onFileError:function(file,error){alert("error on file: "+file.name+" error: "+error+"")}});
 	
 	
-	$.urlParam = function(name){
-		var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-		if (results==null){
-		   return null;
-		}
-		else{
-		   return results[1] || 0;
-		}
-	}
-	var ordernum = decodeURIComponent($.urlParam('ordernum'));
+	
 	$("#viewpdf").click(function(){
 	opertnType = 'view';
 	$.download('upload.php','operationtype='+opertnType+'&ordernumber='+ordernum);
@@ -76,7 +77,7 @@
 				data: { ordernumber: ordernum, operationtype: null },
 				success: function(returned_data) {
 					//Var returned_data is ONLY available inside this fn!
-					alert(returned_data);
+					//alert(returned_data);
 					var obj = JSON.parse(returned_data);
 					console.log(obj);
 					if(obj == null || (obj["url"] == null || obj["url"] == '')){

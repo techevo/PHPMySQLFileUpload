@@ -13,9 +13,10 @@
  */
 (function($) {
 
-  
+  console.log("hello");
+  alert("hi");
   $.fn.pekeUpload = function(options){
-
+	
     // default configuration properties
     var defaults = {
       onSubmit:       false,
@@ -37,7 +38,7 @@
     };
 
     var options = $.extend(defaults, options);
-
+	console.log("options=====" + options.data);
     //Main function
     var obj;
     var file = new Object();
@@ -63,6 +64,7 @@
         file.size = (obj[0].files[0].size/1024)/1024;
         if (validateresult()==true){
           if (options.onSubmit==false){
+			
             UploadFile();
           }
           else{
@@ -78,6 +80,7 @@
     //Function that uploads a file
     function UploadFile(){
       var error = true;
+	  console.log("options=" + options);
       if (options.theme=="bootstrap"){
         var htmlprogress = '<div class="file"><div class="filename"></div><div class="progress progress-striped"><div class="bar pekeup-progress-bar" style="width: 0%;"><span class="badge badge-info"></span></div></div></div>';
       }
@@ -88,13 +91,16 @@
       var formData = new FormData();
       formData.append(options.field, obj[0].files[0]);
       formData.append('data', options.data);
+	  console.log("formData=" + formData);
+	  console.log("data=" + options.data);
       $.ajax({
             url: options.url,
             type: 'POST',
             data: formData,
-            dataType: 'json',
+            //dataType: 'json',
             success: function(data){
               var percent = 100;
+			  console.log(obj);
               obj.next('a').next('div').find('.pekeup-progress-bar:first').width(percent+'%');
                 obj.next('a').next('div').find('.pekeup-progress-bar:first').text(percent+"%");
                 if (data==1){
