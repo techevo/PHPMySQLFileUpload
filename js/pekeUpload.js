@@ -38,7 +38,7 @@
     };
 
     var options = $.extend(defaults, options);
-	console.log("options=====" + options.data);
+	console.log("data=" + options.data["ordernumber"]);
     //Main function
     var obj;
     var file = new Object();
@@ -90,14 +90,18 @@
       obj.next('a').next('div').prepend(htmlprogress);
       var formData = new FormData();
       formData.append(options.field, obj[0].files[0]);
-      formData.append('data', options.data);
+      formData.append('ordernumber', options.data["ordernumber"]);
+	  formData.append('operationtype', options.data["operationtype"]);
 	  console.log("formData=" + formData);
-	  console.log("data=" + options.data);
+	  console.log("data=" + options.data["ordernumber"]);
       $.ajax({
             url: options.url,
             type: 'POST',
+			cache: false,
             data: formData,
             //dataType: 'json',
+			processData: false, // Don't process the files
+			contentType: false, // Set content type to false as jQuery will tell the server its a query string request
             success: function(data){
               var percent = 100;
 			  console.log(obj);
