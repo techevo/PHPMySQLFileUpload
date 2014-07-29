@@ -39,11 +39,13 @@ if($_POST['operationtype'] == 'add'){
 if($_POST['operationtype'] == 'view'){
 	//retrive file path from data base and set the path
 	//query form the database
-	$result = mysqli_query($con,getRetriveQuery($paramSent));
-	$row = mysqli_fetch_array($result);
-	$filePath = $row->url;
-	$file = $root.$filePath;
-	downloadFile($file);
+	$result = mysqli_query($con,getRetriveQuery($_POST['ordernumber']));
+	while($row = mysqli_fetch_array($result)) {
+		$filePath = $row['url'];
+		$file = $root.$filePath;
+		downloadFile($file);
+	}
+	
 }
 if($_POST['operationtype'] == 'delete'){
 	$fileName = $root."/PHPMySQLFileUPload/".$targetFolder."/";
@@ -92,7 +94,7 @@ function downloadFile($file) { // $file = include path
         if(file_exists($file)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($file));
+            header('Content-Disposition: attachment; filename="IRCTC Ltd,Booked Ticket Printing.pdf"');
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
