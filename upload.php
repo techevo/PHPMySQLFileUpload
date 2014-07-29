@@ -94,6 +94,7 @@ function downloadFile($file) { // $file = include path
         if(file_exists($file)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
+			//added single quotes to file name
             header('Content-Disposition: attachment; filename="'.basename($file).'"');
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
