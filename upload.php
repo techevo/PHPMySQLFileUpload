@@ -64,6 +64,7 @@ if($_POST['operationtype'] == 'view'){
 	while($row = mysqli_fetch_array($result)) {
 		$filePath = $row['url'];
 		$file = $root.$filePath;
+<<<<<<< HEAD
 		echo $file;
 		downloadFile($file);
 		/*if(downloadFile($file) == "1") {
@@ -74,6 +75,11 @@ if($_POST['operationtype'] == 'view'){
 	}
 	
 
+=======
+		downloadFile($file);
+	}
+	
+>>>>>>> origin/master
 }
 if($_POST['operationtype'] == 'delete'){
 	$fileName = $root."/PHPMySQLFileUPload/".$targetFolder."/";
