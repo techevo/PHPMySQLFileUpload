@@ -7,7 +7,7 @@
 		define("col1" , "id");//an auto-increment ID
 		define("col2" , "account");//the 6 character identifier of the Account
 		define("col3" , "standard_number");//the numeric identifier of the Standard
-		define("col4" , "sequence");//for now this will always be ‘1’ as it’s a 1-to-1 relationship of PDF-to-Standard but ultimately we’ll allow multiples and this would control order
+		define("col4" , "sequence");//for now this will always be â€˜1â€™ as itâ€™s a 1-to-1 relationship of PDF-to-Standard but ultimately weâ€™ll allow multiples and this would control order
 		define("col5" , "url");//the URL where the PDF is stored
 		define("col6" , "created_on");//timestamp of when the record was created
 		define("col7" , "created_by");//the ID of the user that created the record ($session_RepID)
@@ -62,6 +62,7 @@
 		function getDeleteQuery ($param3) {
 			$deleteQuery = "DELETE FROM " .tableName. " 
 							 WHERE ".col3."=$param3";
+		        return $deleteQuery;
 		}
     }
     catch (PDOException $e) {
