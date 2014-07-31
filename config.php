@@ -23,7 +23,7 @@
 							 ORDER BY " .col6. " desc limit 1";
 			return $retriveQuery;
 		}
-		
+		 
 		function getUpdateQuery($val1,
 								$val2,
 								$val3

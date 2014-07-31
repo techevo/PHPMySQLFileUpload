@@ -11,7 +11,7 @@
  *  http://jquery.com
  *
  */
-(function($) {
+(function($) { 
 
   $.fn.pekeUpload = function(options){
 	
