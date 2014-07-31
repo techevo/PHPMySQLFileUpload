@@ -47,7 +47,7 @@
 	  onFileSuccess:function(file,data){
 						//logic to store in database.
 						alert("Document was uploaded successfully!");
-						window.location.href=window.location.href;
+						location.reload(true);
 					},
 	  invalidExtError: "Only PDF files are allowed"
 	  });
@@ -61,6 +61,7 @@
 	$("#viewpdf").click(function(){
 	opertnType = 'view';
 	$.download('upload.php','operationtype='+opertnType+'&ordernumber='+ordernum);
+	//$.download('upload.php',{ ordernumber: ordernum, operationtype: opertnType });
 	});
 	
 	$("#deletepdf").click(function(){
@@ -79,7 +80,7 @@
 					//Var returned_data is ONLY available inside this fn!
 					//alert(returned_data);
 					var obj = JSON.parse(returned_data);
-					console.log(obj);
+					//console.log(obj);
 					if(obj == null || (obj["url"] == null || obj["url"] == '')){
 						$("#addpdf").show();
 					} else{
@@ -93,6 +94,24 @@
 	});
 	
 	jQuery.download = function(url, data, method){
+		/*$.ajax({
+				url: url,
+				type: 'POST',
+				data: data,
+				success: function(returned_data) {
+					//Var returned_data is ONLY available inside this fn!
+					//alert(returned_data);
+					//var obj = JSON.parse(returned_data);
+					console.log(returned_data);
+					if(returned_data == "0"){
+						alert("File does not exists");
+					} else{
+						window.open("file:///" + returned_data,'_parent');
+					}
+				}
+			});*/
+		
+		
 		//url and data options required
 		if( url && data ){ 
 			//data can be string of parameters or array/object

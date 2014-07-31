@@ -2,7 +2,7 @@
 
     try {
         $con = mysqli_connect("localhost","root","","test");
-		
+		$basepath = "/PhpFileUpload-master/PHPMySQLFileUpload/storepdfs/";
 		define("tableName" ,  "standardpdf");
 		define("col1" , "id");//an auto-increment ID
 		define("col2" , "account");//the 6 character identifier of the Account
@@ -29,9 +29,9 @@
 								$val3
 								) {
 			$updateQuery = "UPDATE " .tableName. "
-								SET " .col2. " =$val1,
-									" .col5. " =$val2,
-									" .col9. " =$val3";
+								SET " .col2. " ='$val1',
+									" .col5. " ='$val2',
+									" .col9. " ='$val3'";
 		
 			return $updateQuery;
 		}
@@ -47,17 +47,16 @@
 									 ".col5.",
 									 ".col7.",
 									 ".col9."
-									)
+									) 
 								VALUES
 									 (
-									 $val2,
-									 $val3,
-									 $val5,
-									 $val7,
-									 $val9
+									 '$val2',
+									 '$val3',
+									 '$val5',
+									 '$val7',
+									 '$val9'
 									 )
-								
-								)";
+								";
 			return $insertQuery;
 		}
 		function getDeleteQuery ($param3) {

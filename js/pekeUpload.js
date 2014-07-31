@@ -13,8 +13,6 @@
  */
 (function($) {
 
-  console.log("hello");
-  alert("hi");
   $.fn.pekeUpload = function(options){
 	
     // default configuration properties
@@ -38,7 +36,6 @@
     };
 
     var options = $.extend(defaults, options);
-	console.log("data=" + options.data["ordernumber"]);
     //Main function
     var obj;
     var file = new Object();
@@ -92,8 +89,6 @@
       formData.append(options.field, obj[0].files[0]);
       formData.append('ordernumber', options.data["ordernumber"]);
 	  formData.append('operationtype', options.data["operationtype"]);
-	  console.log("formData=" + formData);
-	  console.log("data=" + options.data["ordernumber"]);
       $.ajax({
             url: options.url,
             type: 'POST',
@@ -104,7 +99,7 @@
 			contentType: false, // Set content type to false as jQuery will tell the server its a query string request
             success: function(data){
               var percent = 100;
-			  console.log(obj);
+			  console.log("data==" + data);
               obj.next('a').next('div').find('.pekeup-progress-bar:first').width(percent+'%');
                 obj.next('a').next('div').find('.pekeup-progress-bar:first').text(percent+"%");
                 if (data==1){
