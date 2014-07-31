@@ -76,11 +76,19 @@ if($_POST['operationtype'] == 'view'){
 
 }
 if($_POST['operationtype'] == 'delete'){
-	$fileName = $root."/PHPMySQLFileUPload/".$targetFolder."/";
+	//first retrieve the file from the url. query form the database
+	$fileName = '';
+	$result = mysqli_query($con,getRetriveQuery($_POST['ordernumber']));
+	while($row = mysqli_fetch_array($result)) {
+		$filePath = $row['url'];
+		$fileName = $root.$filePath;
+	}
+	if($fileName != ''){
 	//rename the file
 	renameFile($fileName,$root.$basepath);
+	}
 	//delete the entry from the database
-	
+	$result = mysqli_query($con,getDeleteQuery($_POST['ordernumber']));
 }
 
 
@@ -179,7 +187,12 @@ function downloadFile($file) { // $file = include path
 //delete pdf
 //rename file when delete and make the column "file path" value to null and enable add button
 function renameFile($fileName){
-	rename($fileName,$root."/FileUploadUpdate/uploads/_obsolete.pdf");
-	//modify database column for that row.
+	try{
+		rename($fileName,$renameFile."_obsolete.pdf");
+		echo 'done';
+	}
+	catch(Exception $e){
+		echo $e->getMessage();
+	}
 }
 ?>
