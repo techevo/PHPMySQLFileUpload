@@ -62,6 +62,7 @@
 		function getDeleteQuery ($param3) {
 			$deleteQuery = "DELETE FROM " .tableName. " 
 							 WHERE ".col3."=$param3";
+			 return $deleteQuery;
 		}
     }
     catch (PDOException $e) {

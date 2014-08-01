@@ -39,19 +39,23 @@ if($_POST['operationtype'] == 'change'){
 	if (!empty($_FILES)) {
 		//call addpdf
 		$file_name = changepdf($_POST['ordernumber']);
-		$tempFile = $_FILES['file']['tmp_name'];
-		$targetPath = dirname(__FILE__) . '/' . $targetFolder;
-		$targetFile = rtrim($targetPath,'/') . '/' . $file_name;//$_FILES['file']['name'];
-		// Validate the file type
-		$fileTypes = array('pdf','PDF'); // File extensions
-		$fileParts = pathinfo($_FILES['file']['name']);
-		if (in_array($fileParts['extension'],$fileTypes)) {
-			//print_r($tempFile);
-			//print_r($targetFile);
-			move_uploaded_file($tempFile,$targetFile);
-			echo '1';
+		if($file_name != "0") {
+			$tempFile = $_FILES['file']['tmp_name'];
+			$targetPath = dirname(__FILE__) . '/' . $targetFolder;
+			$targetFile = rtrim($targetPath,'/') . '/' . $file_name;//$_FILES['file']['name'];
+			// Validate the file type
+			$fileTypes = array('pdf','PDF'); // File extensions
+			$fileParts = pathinfo($_FILES['file']['name']);
+			if (in_array($fileParts['extension'],$fileTypes)) {
+				//print_r($tempFile);
+				//print_r($targetFile);
+				move_uploaded_file($tempFile,$targetFile);
+				echo '1';
+			} else {
+				echo 'Invalid file type.';
+			}
 		} else {
-			echo 'Invalid file type.';
+			echo 'old file not found';
 		}
 		
 	}
@@ -72,15 +76,30 @@ if($_POST['operationtype'] == 'view'){
 			echo '0';
 		}*/
 	}
+	mysqli_close($con);
 	
 
 }
 if($_POST['operationtype'] == 'delete'){
-	$fileName = $root."/PHPMySQLFileUPload/".$targetFolder."/";
+	//first retrieve the file from the url. query form the database
+	$fileName = '';
+	$result = mysqli_query($con,getRetriveQuery($_POST['ordernumber']));
+	while($row = mysqli_fetch_array($result)) {
+		$filePath = $row['url'];
+		$fileName = $root.$filePath;
+	}
+	if($fileName != ''){
 	//rename the file
-	renameFile($fileName,$root.$basepath);
+	$renameSuccess = renameFile($fileName,$root.$basepath);
+	}
 	//delete the entry from the database
-	
+	$result = mysqli_query($con,getDeleteQuery($_POST['ordernumber']));
+	if($renameSuccess == "1") {
+		echo 'done';
+	} else {
+		echo $renameSuccess;
+	}
+	mysqli_close($con);
 }
 
 
@@ -88,11 +107,7 @@ if($_POST['operationtype'] == 'delete'){
 function addpdf($orderNum){
 	$retInfo = retrivePdfForOrderAddChange($orderNum);
 	$file_name;
-	if($retInfo == null) {
-		$file_name = $_SESSION["session_account"]."_".$orderNum.".pdf";
-	} else {
-		$file_name = $_SESSION["session_account"]."_".$orderNum . (substr($retInfo->url,-6,3) + 1). ".pdf";
-	}
+	$file_name = $_SESSION["session_account"]."_".$orderNum.".pdf";
 	global $con;
 	global $root;
 	global $basepath;
@@ -107,6 +122,7 @@ function addpdf($orderNum){
     } else {
         echo 'insertion failed' . mysqli_error($dbc);
     }
+	mysqli_close($con);
 	return $file_name;
 }
 
@@ -114,24 +130,26 @@ function addpdf($orderNum){
 function changepdf($orderNum){
 	$retInfo = retrivePdfForOrderAddChange($orderNum);
 	$file_name;
-	if($retInfo == null) {
-		$file_name = $_SESSION["session_account"]."_".$orderNum.".pdf";
+	$file_name = $_SESSION["session_account"]."_".$orderNum.".pdf";
+	$renameSuccess = renameFile($basepath.$file_name);
+	if($renameSuccess =="1") {
+		global $con;
+		global $root;
+		global $basepath;
+		$query = getUpdateQuery($_SESSION["session_account"],
+												   $root.$basepath.$file_name,
+												   $_SESSION["session_repID"]);
+		mysqli_query($con,$query);
+		if(mysqli_affected_rows($con)==1){
+			$iid = mysqli_insert_id($con);
+		} else {
+			echo 'insertion failed' . mysqli_error($dbc);
+		}
+		mysqli_close($con);
+		return $file_name;
 	} else {
-		$file_name = $_SESSION["session_account"]."_".$orderNum . "_obsolete". (substr($retInfo->url,-6,3) + 1). ".pdf";
+		return "0";
 	}
-	global $con;
-	global $root;
-	global $basepath;
-	$query = getUpdateQuery($_SESSION["session_account"],
-											   $root.$basepath.$file_name,
-											   $_SESSION["session_repID"]);
-	mysqli_query($con,$query);
-	if(mysqli_affected_rows($con)==1){
-        $iid = mysqli_insert_id($con);
-    } else {
-        echo 'insertion failed' . mysqli_error($dbc);
-    }
-	return $file_name;
 }  
 
 //onload function
@@ -141,6 +159,7 @@ function retrivePdfForOrder($paramSent){
 	$result = mysqli_query($con,getRetriveQuery($paramSent));
 	$row = mysqli_fetch_array($result);
 	echo json_encode($row);
+	mysqli_close($con);
 	return $row;
 }
 //called from add or change function
@@ -179,7 +198,24 @@ function downloadFile($file) { // $file = include path
 //delete pdf
 //rename file when delete and make the column "file path" value to null and enable add button
 function renameFile($fileName){
-	rename($fileName,$root."/FileUploadUpdate/uploads/_obsolete.pdf");
-	//modify database column for that row.
+	try{
+		$obsoleteFileName = substr($fileName, 0, -3)."_obsolete_001";
+		$index = 1;
+		while(true) {
+			if(file_exists($obsoleteFileName."pdf")) {
+				$index ++;
+				$obsoleteFileName = substr($fileName, 0, -3)."_obsolete_".str_pad("$index", 3, "0", STR_PAD_LEFT);
+				continue;
+			} else {
+				break;
+			}
+		}
+		rename($fileName,$renameFile.$obsoleteFileName."pdf");
+		return "1";
+		
+	}
+	catch(Exception $e){
+		return $e->getMessage();
+	}
 }
 ?>

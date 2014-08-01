@@ -65,8 +65,21 @@
 	});
 	
 	$("#deletepdf").click(function(){
-			//delete and rename
-			
+		//delete and rename
+		$.ajax({
+			url: 'upload.php',
+			type: 'POST',
+			data: { ordernumber: ordernum, operationtype: 'delete' },
+			success: function(returned_data) {
+				//Var returned_data is ONLY available inside this fn!
+				if(returned_data === 'done'){
+					$("#addpdf").show();
+					$("#changepdf").hide();
+					$("#viewpdf").hide();
+					$("#deletepdf").hide();
+				}
+			}
+		});
 	});
 	
 	
